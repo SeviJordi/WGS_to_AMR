@@ -17,38 +17,38 @@ jobs:
           cancel_others: "true"
           concurrent_skipping: "same_content_newer"
           paths_ignore: '["**/README.md", "**/LICENSE"]'
-    Install_conda:
-      needs: skip_duplicates
-      if: ${{ needs.skip_duplicate.outputs.should_skip != 'true' }}
-      runs-on: ubuntu-latest
-      steps:
-        - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-        - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-        - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-        - name: Check out repository code
-          uses: actions/checkout@v3
-        - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-        - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-        - name: create mamba environment
-          uses: conda-incubator/setup-miniconda@v2
-          with:
-            mamba-version: "*"
-            channels: conda-forge,bioconda,defaults
-            environment-file: requirements.yaml
-            auto-activate-base: false
-            activate-environment: AMR_prediction
-      Test:
-        needs: Install_conda
-        if: ${{ needs.skip_duplicate.outputs.should_skip != 'true' }}
-        runs-on: ubuntu-latest
-        defaults:
-          run:
-            shell: bash -l {0}
-        steps:
-          - name: Check out repository code
-            uses: actions/checkout@v3
-          - name: Run tests
-            run: |
-              conda activate AMR_prediction
-              bash predict_AMR.sh -o .test/output.csv -i .test/data/*
+  Install_conda:
+    needs: skip_duplicates
+    if: ${{ needs.skip_duplicate.outputs.should_skip != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - name: create mamba environment
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          mamba-version: "*"
+          channels: conda-forge,bioconda,defaults
+          environment-file: requirements.yaml
+          auto-activate-base: false
+          activate-environment: AMR_prediction
+  Test:
+    needs: Install_conda
+    if: ${{ needs.skip_duplicate.outputs.should_skip != 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Run tests
+        run: |
+          conda activate AMR_prediction
+          bash predict_AMR.sh -o .test/output.csv -i .test/data/*
 

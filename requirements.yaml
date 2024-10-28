@@ -16,3 +16,4 @@ dependencies:
   - pandas
   - r-DiagrammeR
   - r-Ckmeans.1d.dp
+  - parallel

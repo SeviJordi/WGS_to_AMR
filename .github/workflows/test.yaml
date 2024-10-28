@@ -47,9 +47,16 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
+      - name: crate environment
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          mamba-version: "*"
+          channels: conda-forge,bioconda,defaults
+          environment-file: requirements.yaml
+          auto-activate-base: false
+          activate-environment: AMR_prediction
+
       - name: Run tests
         run: |
-          conda init
-          conda activate AMR_prediction
           bash predict_AMR.sh -o .test/output.csv -i .test/data/*
 

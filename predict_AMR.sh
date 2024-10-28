@@ -27,7 +27,9 @@ logthis() {
 
 findKmers () {
 
-    name=$(basename $1 | cut -d '.' -f 1)
+    name=$(basename $1)
+    name=${name%.*}
+    
     glistmaker $1 -w 15 -o kmers_${name}
 
     glistquery kmers_${name}_15.list -f $3 > ${2}/${name}@fosfo.txt

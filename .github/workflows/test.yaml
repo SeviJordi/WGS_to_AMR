@@ -49,6 +49,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Run tests
         run: |
+          conda init
           conda activate AMR_prediction
           bash predict_AMR.sh -o .test/output.csv -i .test/data/*
 

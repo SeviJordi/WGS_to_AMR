@@ -45,7 +45,7 @@ export -f findKmers
 
 # Check arguments
 # Initialize variables for options
-batch_files=()
+input_files=()
 
 # Loop through arguments manually
 while getopts "o:i:" opt; do
@@ -57,7 +57,7 @@ while getopts "o:i:" opt; do
       # Add all remaining arguments as batch files starting from current position
       shift $((OPTIND - 2))
       while [[ "$1" && "$1" != -* ]]; do
-        batch_files+=("$1")
+        input_files+=("$1")
         shift
       done
       ;;
@@ -69,8 +69,8 @@ while getopts "o:i:" opt; do
 done
 
 
-# Check if main_file is set and batch_files is not empty
-if [ -z "$output_file" ] || [ ${#batch_files[@]} -eq 0 ]; then
+# Check if output_file is set and input_files is not empty
+if [ -z "$output_file" ] || [ ${#input_files[@]} -eq 0 ]; then
   help
   exit 1
 fi
@@ -102,7 +102,7 @@ logthis "Temporary directory: $tmp_dir"
 # Predict AMR
 # Find kmers for each genome
 logthis "Finding kmers in genomes"
-parallel findKmers {} $tmp_dir $fosfo_kmers $amik_kmers $pip_kmers ::: ${batch_files[@]}
+parallel findKmers {} $tmp_dir $fosfo_kmers $amik_kmers $pip_kmers ::: ${input_files[@]}
 
 # Creating input matrix
 logthis "Creating input matrix for fosfomycin"
@@ -121,7 +121,7 @@ Rscript --vanilla src/evaluate.R $fosfo_model $tmp_dir/matrix_fosfo.txt \
     $pip_model $tmp_dir/matrix_pip.txt \
     $output_file
 
-logthis "Results saved in output.csv"
+logthis "Results saved in $output_file"
 
 # Clean up
 rm -r $tmp_dir

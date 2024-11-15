@@ -37,7 +37,7 @@ Options:
 
 ## Test
 
-Within this repository, four it *K. pneumoniae* genomes are provided to test the prediction. To verify that all installations have been completed successfully, run:
+Within this repository, four *K. pneumoniae* genomes are provided to test the prediction. To verify that all installations have been completed successfully, run:
 
 ```
 bash predict_AMR.sh -o .test/output.csv -i .test/data/*

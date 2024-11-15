@@ -2,13 +2,16 @@
 
 # Jordi Sevilla Fortuny
 
+# get script dir
+scd=$(dirname $0)
+
 # Set data files
-amik_kmers="data/amikacin.kmers.txt"
-fosfo_kmers="data/fosfomycin.kmers.txt"
-pip_kmers="data/pip_taz.kmers.txt"
-amik_model="data/amikacin.model.rds"
-fosfo_model="data/fosfomycin.model.rds"
-pip_model="data/pip_taz.model.rds"
+amik_kmers="$scd/data/amikacin.kmers.txt"
+fosfo_kmers="$scd/data/fosfomycin.kmers.txt"
+pip_kmers="$scd/data/pip_taz.kmers.txt"
+amik_model="$scd/data/amikacin.model.rds"
+fosfo_model="$scd/data/fosfomycin.model.rds"
+pip_model="$scd/data/pip_taz.model.rds"
 
 # Side functions
 help() {
@@ -106,17 +109,17 @@ parallel findKmers {} $tmp_dir $fosfo_kmers $amik_kmers $pip_kmers ::: ${input_f
 
 # Creating input matrix
 logthis "Creating input matrix for fosfomycin"
-python3 src/create_matrix.py $fosfo_kmers $tmp_dir/matrix_fosfo.txt $tmp_dir/*@fosfo.txt
+python3 $scd/src/create_matrix.py $fosfo_kmers $tmp_dir/matrix_fosfo.txt $tmp_dir/*@fosfo.txt
 
 logthis "Creating input matrix for amikacin"
-python3 src/create_matrix.py $amik_kmers $tmp_dir/matrix_amik.txt $tmp_dir/*@amika.txt
+python3 $scd/src/create_matrix.py $amik_kmers $tmp_dir/matrix_amik.txt $tmp_dir/*@amika.txt
 
 logthis "Creating input matrix for pip/taz"
-python3 src/create_matrix.py $pip_kmers $tmp_dir/matrix_pip.txt $tmp_dir/*@pip.txt
+python3 $scd/src/create_matrix.py $pip_kmers $tmp_dir/matrix_pip.txt $tmp_dir/*@pip.txt
 
 
 # Predicting resistance
-Rscript --vanilla src/evaluate.R $fosfo_model $tmp_dir/matrix_fosfo.txt \
+Rscript --vanilla $scd/src/evaluate.R $fosfo_model $tmp_dir/matrix_fosfo.txt \
     $amik_model $tmp_dir/matrix_amik.txt \
     $pip_model $tmp_dir/matrix_pip.txt \
     $output_file

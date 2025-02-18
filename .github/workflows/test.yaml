@@ -50,7 +50,7 @@ jobs:
       - name: crate environment
         uses: conda-incubator/setup-miniconda@v2
         with:
-          mamba-version: "*"
+          conda-version: "*"
           channels: conda-forge,bioconda,defaults
           environment-file: requirements.yaml
           auto-activate-base: false

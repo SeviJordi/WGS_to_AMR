@@ -122,6 +122,8 @@ for (x in 1:nrow(pip_data)){
 
 
 # Write output
-write.csv(output_table, output_file, row.names = FALSE)
+output_table %>%
+    pivot_wider(names_from = Atb, values_from = c(Prob_resistance, Prediction)) %>%
+    write.csv(output_file, row.names = FALSE)
 
 sprintf("Rscript - %s | Finished", Sys.time())

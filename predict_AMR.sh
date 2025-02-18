@@ -5,14 +5,6 @@
 # get script dir
 scd=$(dirname $0)
 
-# Set data files
-amik_kmers="$scd/data/amikacin.kmers.txt"
-fosfo_kmers="$scd/data/fosfomycin.kmers.txt"
-pip_kmers="$scd/data/pip_taz.kmers.txt"
-amik_model="$scd/data/amikacin.model.rds"
-fosfo_model="$scd/data/fosfomycin.model.rds"
-pip_model="$scd/data/pip_taz.model.rds"
-
 # Side functions
 help() {
     echo "Usage: $0 -o [OUTPUT FILE] -i [INPUT_GENOMES]."
@@ -28,21 +20,21 @@ logthis() {
     echo "$(date) - $1"
 }
 
-findKmers () {
+findKmers () { 
 
     name=$(basename $1)
     name=${name%.*}
     
     glistmaker $1 -w 15 -o kmers_${name}
 
-    glistquery kmers_${name}_15.list -f $3 > ${2}/${name}@fosfo.txt
-    glistquery kmers_${name}_15.list -f $4 > ${2}/${name}@amika.txt
-    glistquery kmers_${name}_15.list -f $5 > ${2}/${name}@pip.txt
+    for atb in $(cat $3); do
+      glistquery kmers_${name}_15.list -f $4/$atb.kmers > ${2}/${name}@$atb.txt
+    done
 
 	rm kmers_${name}_15.list
 
 }
-# usage findKmers [genome] [temp_dir] [fosfo kmers] [amik kmers] [pier kmers]
+# usage findKmers [genome] [temp_dir] [atbs] [path_to_kmers]
 export -f findKmers
 
 
@@ -105,24 +97,16 @@ logthis "Temporary directory: $tmp_dir"
 # Predict AMR
 # Find kmers for each genome
 logthis "Finding kmers in genomes"
-parallel findKmers {} $tmp_dir $fosfo_kmers $amik_kmers $pip_kmers ::: ${input_files[@]}
+parallel findKmers {} $tmp_dir $scd/data/Atbs.txt $scd/data/ ::: ${input_files[@]}
 
 # Creating input matrix
-logthis "Creating input matrix for fosfomycin"
-python3 $scd/src/create_matrix.py $fosfo_kmers $tmp_dir/matrix_fosfo.txt $tmp_dir/*@fosfo.txt
-
-logthis "Creating input matrix for amikacin"
-python3 $scd/src/create_matrix.py $amik_kmers $tmp_dir/matrix_amik.txt $tmp_dir/*@amika.txt
-
-logthis "Creating input matrix for pip/taz"
-python3 $scd/src/create_matrix.py $pip_kmers $tmp_dir/matrix_pip.txt $tmp_dir/*@pip.txt
-
+for atb in $(cat $scd/data/Atbs.txt); do
+  logthis "Creating input matrix for $atb"
+  python3 $scd/src/create_matrix.py $scd/data/${atb}.kmers $tmp_dir/matrix_${atb}.txt $tmp_dir/*@$atb.txt
+done
 
 # Predicting resistance
-Rscript --vanilla $scd/src/evaluate.R $fosfo_model $tmp_dir/matrix_fosfo.txt \
-    $amik_model $tmp_dir/matrix_amik.txt \
-    $pip_model $tmp_dir/matrix_pip.txt \
-    $output_file
+Rscript --vanilla $scd/src/evaluate.R $scd/data/Atbs.txt  $scd/data/ $tmp_dir $output_file
 
 logthis "Results saved in $output_file"
 

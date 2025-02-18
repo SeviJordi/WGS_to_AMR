@@ -1,0 +1,12 @@
+Amikacina
+Aztreonam
+Cefepime
+Ceftazidima
+Ciprofloxacina
+Fosfomicina
+Gentamicina
+Imipenem
+Levofloxacina
+Meropenem
+Piperacilina_tazobactam
+Tobramicina

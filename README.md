@@ -5,7 +5,7 @@
 Improved prediction of AMR in *Klebsiella pneumoniae* using machine learning
 
 ---
-This repository contains the data and scripts to predict antimicrobial resistance (AMR) to amikacin, fosfomycin and piperacillin/tazobactm on *K. pneumoniae* using machine learning.
+This repository contains the data and scripts to predict antimicrobial resistance (AMR) to amikacin, aztreonam, ceftazidime, ciprofloxacin, cefepime, fosfomycin, gentamicin, imipenem, meropenem, tobramycin and piperacillin/tazobactam on *K. pneumoniae* using machine learning.
 
 ## Installation
 
@@ -45,6 +45,6 @@ bash predict_AMR.sh -o .test/output.csv -i .test/data/*
 
 ## Output
 
-The output a CSV file with 4 columns. The genome ID retrived from the genome file, the antibiotic for wich the prediction is made, the probability of resistance, and the R/S prediction based on a probability threshold. You can find an example of the output in [output.csv](.test/output.csv)
+The output a CSV file with 23 columns. The genome ID retrived from the genome file,  the probability of resistance for each antibiotic and the R/S prediction based on a probability threshold for each antibiotic. You can find an example of the output in [output.csv](.test/output.csv)
 
 
